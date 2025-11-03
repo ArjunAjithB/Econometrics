@@ -9,9 +9,8 @@ from statsmodels.tsa.arima_process import arma_generate_sample
 from statsmodels.tsa.arima.model import ARIMA
 import statsmodels.api as sm
 
-# -----------------------
 # 1) Generate synthetic ARMA(2,1) data
-# -----------------------
+
 np.random.seed(42)
 n = 500
 
@@ -30,21 +29,18 @@ y = pd.Series(y, index=idx)
 y.plot(title="Synthetic ARMA(2,1) series", figsize=(10,3))
 plt.show()
 
-# -----------------------
 # 2) Fit ARMA via ARIMA (d=0)
-# -----------------------
 # choose orders p and q (here we know true is p=2, q=1)
+
 p, d, q = 2, 0, 1
 model = ARIMA(y, order=(p, d, q))
 res = model.fit()
 
 print(res.summary())
 
-# -----------------------
 # 3) Inspect residuals & diagnostics
-# -----------------------
-residuals = res.resid
 
+residuals = res.resid
 fig, axes = plt.subplots(3, 1, figsize=(10,8), sharex=True)
 axes[0].plot(residuals)
 axes[0].set_title("Residuals")
@@ -58,9 +54,8 @@ from statsmodels.stats.diagnostic import acorr_ljungbox
 ljung_box = acorr_ljungbox(residuals, lags=[10, 20], return_df=True)
 print("\nLjung-Box test (residuals):\n", ljung_box)
 
-# -----------------------
 # 4) In-sample fitted values vs actual
-# -----------------------
+
 fitted = res.predict(start=y.index[0], end=y.index[-1])
 plt.figure(figsize=(10,3))
 plt.plot(y, label="Actual")
@@ -69,9 +64,8 @@ plt.legend()
 plt.title("Actual vs Fitted")
 plt.show()
 
-# -----------------------
 # 5) Forecasting
-# -----------------------
+
 steps = 20
 fc = res.get_forecast(steps=steps)
 fc_mean = fc.predicted_mean
